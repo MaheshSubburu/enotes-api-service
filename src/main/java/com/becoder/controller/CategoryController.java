@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.becoder.dto.CategoryDto;
 import com.becoder.dto.CategoryResponse;
-import com.becoder.entity.Category;
 import com.becoder.service.CategoryService;
 
 @RestController
@@ -24,7 +26,7 @@ public class CategoryController {
 	@Autowired
 	private CategoryService categoryService;
 	
-	@PostMapping("/save-category")
+	@PostMapping("/save")
 	public ResponseEntity<?> saveCategory(@RequestBody CategoryDto categoryDto) {
 		
 		Boolean saveCategory = categoryService.saveCategory(categoryDto);
@@ -34,7 +36,7 @@ public class CategoryController {
 		return new ResponseEntity<>("not saved", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@GetMapping("/category")
+	@GetMapping("/")
 	public ResponseEntity<?> getAllCategory() {
 		
 		List<CategoryDto> allCategory = categoryService.getAllCategory();
@@ -46,7 +48,7 @@ public class CategoryController {
 			return new ResponseEntity<>(allCategory, HttpStatus.OK);
 	}
 	
-	@GetMapping("/active-category")
+	@GetMapping("/active")
 	public ResponseEntity<?> getActiveCategory() {
 		
 		List<CategoryResponse> allCategory = categoryService.getActiveCategory();
@@ -56,5 +58,31 @@ public class CategoryController {
 		
 		else 
 			return new ResponseEntity<>(allCategory, HttpStatus.OK);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id) {
+
+	    CategoryDto categoryDto = categoryService.getCategoryDetailsById(id);
+
+	    if (ObjectUtils.isEmpty(categoryDto)) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body("Category not found with id: " + id);
+	    }
+
+	    return ResponseEntity.ok(categoryDto);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteCategoryById(@PathVariable Integer id) {
+
+	    Boolean deleted = categoryService.deleteCategoryById(id);
+
+	    if (deleted) {
+	        return ResponseEntity.status(HttpStatus.OK)
+	                .body("Category deleted successfully.!");
+	    }
+
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Category not deleted");
 	}
 }
