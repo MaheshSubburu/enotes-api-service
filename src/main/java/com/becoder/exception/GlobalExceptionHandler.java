@@ -11,9 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	
-	@ExceptionHandler(NullPointerException.class)
-	public ResponseEntity<?> handleNullPointerException(Exception e) {
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<?> handleException(Exception e) {
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(NullPointerException.class)
+	public ResponseEntity<?> handleNullPointerException(Exception ne) {
+		return new ResponseEntity<>(ne.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler(ResourceNotFoundException.class)

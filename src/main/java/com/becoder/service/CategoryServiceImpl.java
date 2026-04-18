@@ -67,6 +67,9 @@ public class CategoryServiceImpl implements CategoryService {
 				.orElseThrow(() -> new ResourceNotFoundException("Category not found with id: "+ id));
 		
 		if(!ObjectUtils.isEmpty(category)) {
+			if(category.getName() == null) {
+				throw new IllegalArgumentException("Name is null");
+			}
 			return modelMapper.map(category, CategoryDto.class);
 		}
 		return null;
