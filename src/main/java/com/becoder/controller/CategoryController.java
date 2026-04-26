@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.becoder.dto.CategoryDto;
 import com.becoder.dto.CategoryResponse;
-import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.service.CategoryService;
+import com.becoder.util.CommonUtil;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,28 +32,27 @@ public class CategoryController {
 	private CategoryService categoryService;
 	
 	@PostMapping("/save")
-	public ResponseEntity<?> saveCategory(@RequestBody CategoryDto categoryDto) {
+	public ResponseEntity<?> saveCategory(@Valid @RequestBody CategoryDto categoryDto) {
 		
 		Boolean saveCategory = categoryService.saveCategory(categoryDto);
 		
-		if(saveCategory) return new ResponseEntity<>("saved successfully.!", HttpStatus.CREATED);
+		if(saveCategory) return CommonUtil.createBuildResponseMessage("save success", HttpStatus.CREATED);
+		 
+		//return new ResponseEntity<>("saved successfully.!", HttpStatus.CREATED);
 		
-		return new ResponseEntity<>("not saved", HttpStatus.INTERNAL_SERVER_ERROR);
+		else return CommonUtil.createErrorResponseMessage("Category not saved", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@GetMapping("/")
 	public ResponseEntity<?> getAllCategory() {
-		
-//		String string = null;
-//		string.toLowerCase();
 		
 		List<CategoryDto> allCategory = categoryService.getAllCategory();
 		
 		if(CollectionUtils.isEmpty(allCategory)) 
 			return ResponseEntity.noContent().build();
 		
-		else 
-			return new ResponseEntity<>(allCategory, HttpStatus.OK);
+		else return CommonUtil.createBuildResponse(allCategory, HttpStatus.OK);
+			// return new ResponseEntity<>(allCategory, HttpStatus.OK);
 	}
 	
 	@GetMapping("/active")
@@ -63,8 +63,8 @@ public class CategoryController {
 		if(CollectionUtils.isEmpty(allCategory)) 
 			return ResponseEntity.noContent().build();
 		
-		else 
-			return new ResponseEntity<>(allCategory, HttpStatus.OK);
+		else return CommonUtil.createBuildResponse(allCategory, HttpStatus.OK);
+			// return new ResponseEntity<>(allCategory, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
