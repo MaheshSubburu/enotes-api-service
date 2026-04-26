@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.becoder.util.CommonUtil;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -13,18 +15,21 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> handleException(Exception e) {
-		return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		// return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		return CommonUtil.createErrorResponseMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler(NullPointerException.class)
 	public ResponseEntity<?> handleNullPointerException(Exception ne) {
-		return new ResponseEntity<>(ne.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		// return new ResponseEntity<>(ne.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		return CommonUtil.createErrorResponseMessage(ne.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> handleResourceNotFoundException(Exception re) {
 		log.error("Conroller :: getCategoryDetailsById ::", re.getMessage());
-		return new ResponseEntity<>(re.getMessage(), HttpStatus.NOT_FOUND);
+		//return new ResponseEntity<>(re.getMessage(), HttpStatus.NOT_FOUND);
+		return CommonUtil.createErrorResponseMessage(re.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
 }
